@@ -1,33 +1,44 @@
 from ffmpeg_normalize import FFmpegNormalize
-from pydub import AudioSegment
-import pyloudness
+import printStats as ps
+import os
+import sys
 
-# input_file = "/Users/christian/Desktop/Regel_no_5_cd01_b.3_test.wav"
-input_file = (
-    "/Users/christian/Music/Logic/SwannStudio/Regelno5/mastered/Regel nr 5 cd06 b.wav"
-)
-output_file = "/Users/christian/Desktop/newOne.wav"
+input_file = "/Users/christian/Desktop/file_test.wav"
 
 
-def printStats(file):
-    loudness_stats = pyloudness.get_loudness(file)
-    print("_________________")
-    print("Loudness :  " + str(loudness_stats["Integrated Loudness"]["I"]))
-    print("Peak     :  " + str(loudness_stats["True Peak"]["Peak"]))
-    print("_________________")
-    for x in loudness_stats:
-        print(loudness_stats[x])
-        # for y in loudness_stats[x]:
-        #     print(loudness_stats[x][y])
 
-
-def normaliseAudio(file):
-    print("analysing audio....")
-    ffmpeg_normalize = FFmpegNormalize(target_level=-21, true_peak=-3.5)
-    ffmpeg_normalize.add_media_file(file, output_file)
+def normaliseFile(path, file):
+    print("analysing audio for " + file)
+    ffmpeg_normalize = FFmpegNormalize(
+        target_level=-21, true_peak=-3.3, sample_rate=44100
+    )
+    ffmpeg_normalize.add_media_file(file, path+'/normalised/'+os.path.basename(file))
     ffmpeg_normalize.run_normalization()
     print("done for " + file)
+    print("_")
 
 
-normaliseAudio(input_file)
-printStats(output_file)
+def normaliseAudioFolder(path):
+    fileList = os.listdir(path)
+    print("================================================")
+    print("NORMALISING...")
+    print("================================================")
+    for file in fileList:
+        filePath = os.path.join(path, file)
+        splitFileName = os.path.basename(file).split('.')
+        fileType = splitFileName[len(splitFileName) - 1]
+
+        if fileType == 'wav':
+            normaliseFile(path, filePath)
+    print("================================================")
+    print("DONE NORMALISING")
+    print("================================================")
+
+if __name__ == "__main__":
+    path = sys.argv[1]
+    pathToNorm = path + '/normalised/'
+    if not os.path.exists(pathToNorm):
+        os.makedirs(pathToNorm)
+
+    normaliseAudioFolder(path)
+    ps.printStats(pathToNorm)
