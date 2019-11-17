@@ -3,11 +3,12 @@ import printStats as ps
 import os
 import sys
 
-input_file = "/Users/christian/Desktop/file_test.wav"
-
-
-
 def normaliseFile(path, file):
+    '''takes a path and and file name
+    Normalises audio file to -21LUFS with -3dB peak
+    set to 44100hZ'''
+    #TODO add variable target level, true peak and sample rate.
+
     print("analysing audio for " + file)
     ffmpeg_normalize = FFmpegNormalize(
         target_level=-21, true_peak=-3.3, sample_rate=44100
@@ -19,6 +20,7 @@ def normaliseFile(path, file):
 
 
 def normaliseAudioFolder(path):
+    '''Takes a path and loops through all .wav files in that path.'''
     fileList = os.listdir(path)
     print("================================================")
     print("NORMALISING...")
@@ -35,6 +37,7 @@ def normaliseAudioFolder(path):
     print("================================================")
 
 if __name__ == "__main__":
+    '''normalise and prints stats for all files in path from sys.argv'''
     path = sys.argv[1]
     pathToNorm = path + '/normalised/'
     if not os.path.exists(pathToNorm):

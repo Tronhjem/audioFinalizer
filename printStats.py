@@ -3,6 +3,7 @@ import sys
 import os
 
 def stats(file):
+    '''Takes a file path and outputs Loudness and Peak to terminal'''
     loudness_stats = pyloudness.get_loudness(file)
     print("File     :  " + os.path.basename(file))
     print("_________________")
@@ -13,6 +14,7 @@ def stats(file):
 
 
 def printStats(folder):
+    '''takes a folder and outputs stats for all .wav files in that folder'''
     fileList = os.listdir(folder)
     print("================================================")
     print("STATS:")
