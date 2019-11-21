@@ -12,10 +12,10 @@ def normaliseFile(path, file):
 
     print("analysing audio for " + file)
     ffmpeg_normalize = FFmpegNormalize(
-        target_level=-20.8,
-        true_peak=-3.5,
+        target_level=-21.0,
+        true_peak=-3.3,
         sample_rate=44100,
-        loudness_range_target=5.3,
+        loudness_range_target=5.5,
         progress=True,
     )
     ffmpeg_normalize.add_media_file(
